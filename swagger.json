@@ -1,0 +1,78 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "description": "API for e-commerce website",
+    "title": "E-com API"
+  },
+  "servers": [{
+    "url": "localhost:3100"
+  }
+],
+  "components": {
+    "securitySchemes": {
+      "JWT": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "JWT token to authorize requests"
+      }
+    }
+  },
+  "paths": {
+    "/api/signin": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Login",
+        "description": "user login to get token",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Invalid Credentials"
+          }
+        }
+      }
+    },
+
+    "/api/products": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Get Products",
+        "description": "To get, delete, update or filter products.",
+        "security": [
+          {
+            "JWT": {}
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    }
+  }
+}
