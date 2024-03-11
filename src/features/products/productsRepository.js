@@ -38,7 +38,7 @@ export class ProductRepository {
             }
             return product;
         } catch (error) {
-            throw new ErrorHandler("Something went wrong with database. Try again later!", 500);
+            throw   new ErrorHandler("Something went wrong with database. Try again later!", 500);
         }
     }
 
@@ -58,10 +58,8 @@ export class ProductRepository {
                 filterExpression.category = category;
             }
 
-            console.log(filterExpression);
             return await collection.find(filterExpression).toArray();
         } catch (err) {
-            console.log(err)
             throw new ErrorHandler("Something went wrong with database", 500);
         }
     }
@@ -73,7 +71,7 @@ export class ProductRepository {
             collection.updateOne({ _id: new ObjectId(productId) }, {
                 $push: {
                     ratings: {
-                        userId, rating
+                        userId : new ObjectId(userId), rating
                     }
                 }
             })

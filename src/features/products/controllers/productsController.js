@@ -18,24 +18,24 @@ export class ProductsController {
 
     async addProduct(req, res, next) {
         try {
-            const { name, price, sizes } = req.body;
-            const newProduct = new ProductModel(name, null, price, req.file.filename, 'clothes', sizes.split(','))
+            let { name, price, sizes, category, desc } = req.body;
+            price = parseFloat(price);
+            const newProduct = new ProductModel(name, desc, price, req.file.filename, category, sizes.split(','))
             // add the new product to the products array
             const product = await this.productsRepo.add(newProduct);
             // send back the response to the client
             res.status(201).send("Product added to the cart.");
         } catch (error) {
-            console.log(error.message);
             next(error);
         }
     }
 
-    rateProduct(req, res, next) {
+    async rateProduct(req, res, next) {
         const { productID, rating } = req.query;
         const userID = req.user
         try {
-            const error = this.productsRepo.rateProduct(userID, productID, rating);
-            return res.status(200).send('Rating has added successfully.');
+            await this.productsRepo.rateProduct(userID, productID, rating);
+            return res.status(200).send('Rating has been added successfully.');
         } catch (error) {
             next(error);
         }
@@ -62,12 +62,14 @@ export class ProductsController {
             const minPrice = req.query.minPrice;
             const maxPrice = req.query.maxPrice;
             const category = req.query.category;
+
             const result = await this.productsRepo.filterProducts(
                 minPrice,
                 maxPrice,
                 category
             );
 
+            console.log(result)
             res.status(200).send(result);
         } catch (err) {
             next(err)
