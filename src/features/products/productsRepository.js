@@ -68,13 +68,22 @@ export class ProductRepository {
         try {
             const db = getDB();
             const collection = db.collection('Products');
-            collection.updateOne({ _id: new ObjectId(productId) }, {
-                $push: {
-                    ratings: {
-                        userId : new ObjectId(userId), rating
+
+            // 1.Remove existing entry
+            await collection.updateOne({ _id: new ObjectId(productId) }, {
+                $pull: {
+                ratings : {userId : new ObjectId(userId)}
+            }})
+
+            // add new entry
+                return  await collection.updateOne({ _id: new ObjectId(productId) }, {
+                    $push: {
+                        ratings: {
+                            userId: new ObjectId(userId),
+                            rating: rating
+                        }
                     }
-                }
-            })
+                })
         } catch (error) {
             console.log(error)
             throw new ErrorHandler("Something went wrong with database", 500);

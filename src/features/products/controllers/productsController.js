@@ -31,10 +31,10 @@ export class ProductsController {
     }
 
     async rateProduct(req, res, next) {
-        const { productID, rating } = req.query;
-        const userID = req.user
+        const { productID, rating } = req.body;
+        const userID = req.userID;
         try {
-            await this.productsRepo.rateProduct(userID, productID, rating);
+            const result = await this.productsRepo.rateProduct(userID, productID, rating);
             return res.status(200).send('Rating has been added successfully.');
         } catch (error) {
             next(error);
